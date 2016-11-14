@@ -1,0 +1,111 @@
+2011-08-02 Percent complete: 10.1% (see screenshots below)
+
+
+[b]Phase II was put off to fix dueling implementation and to add move list storage.[/b]
+
+The real reason phase II was put off is probably because we are still figuring out how to do it. Some open questions (now closed; answered by [i]Thelo[/i]):
+
+1. How can a javascript page send a message to a server? How can it listen for one? [i]Look into PHP-based servers to handle the client's AJAX style requests.[/i]
+2. Currently do not have a Linux environment on which to modify C client/server code. Is there a better/preferred language to write the server in? JSP? [i]PHP[/i]
+3. The server at a very basic level will start by passing messages (moves) from one client to another. The clients will do all the validating in the beginning, but, when validation moves to the server, will the javascript code have to be rewritten to store a copy of the board on the server? [i]The code must be on the server. This prevents tricky situations of versions of clients, cheating, race conditions, etc... Yes, the code may have to be rewritten.[/i]
+
+More notes taken from [i]Thelo's[/i] advice:
+[b]The Model[/b]
+[i]1. A PHP page receives a request from a client, like "room31|moveA2B3"
+2. The PHP page loads up the gamestate for room 31 from a database (like MySQL), runs the player's move, then answers back with the new gamestate.
+3. Since javascript cannot maintain a proper connection by itself, the client will have to poll the server every X seconds to get the latest gamestate.
+4. The game rules code must live on the server, and the client doesn't necessarily need to have that code.  
+5. It's imperative that the server be authoritative on which moves are legal or illegal. Not only to prevent cheating, but also to resolve race conditions, where a client accidentally sends two moves before the server's response, or the server recieves two moves at once.[/i]
+	
+[b]How to display legal/illegal moves on the client?[/b]
+[b]Naïve way:[/b] [i]Run a version of the rules code on the client.[/i]
+	
+[b]Better way:[/b] [i]When the server gives the gamestate to the client, it also gives a list of possible legal moves. This way, you don't need to maintain two versions of the rules code, yet the client has full knowledge of which moves are legal (for UI).[/i]
+
+[b]How often should the server send the full new gamestate to the client?[/b]
+[b]Naive way:[/b] [i]Always send it entirely, at every X seconds (at every client poll). This works okay but might be heavy on the server and the connection.[/i]
+	
+[b]Better way:[/b] 
+[i]1. Make the client hash its own view of the gamestate
+2. Send that hash with its periodic gamestate poll to the server.
+3. Server compares that hash with the hash of the real current gamestate
+4. If the hashes are equal, the client already has the correct gamestate, so the server only has to answer "ok". 
+5. If the hashes are different, then the server knows to give the full gamestate. 
+6. The gamestate is only transmitted when it needs to.[/i]
+
+[b]What is the downside to having the client do all the move validation, and the server just enforcing turns?[/b]
+[i]The clients can then cheat, the server cannot enforce gamestate consistency, the server must do a bunch of unnecessary tricks to resolve out-of-order moves. It's way easier to just let the one true gamestate live on the server. No worrying about whose version, among the clients, is the "real" one then.[/i]
+ 
+	
+
+
+
+
+[b]Changes:[/b]
++Fixed bugs in dueling.
+++Checks for zero stones in place.
+++Checks for automatic bidding in place.
+++Reports the correct result.
++Implemented move list
+++Each unique piece is assigned a letter.
+++Ability to add a blank move for warrior king spacing.
+++Ability to delete a move in case mistakes are made.
+++Dueling notation generated from duel outcome. Samples:
++++: D0:1-2-STY
++++: D1:2-0-RMV
++++: D1:0-1-RMV
++++: D0:BLF(+1)
++++: D0:BLF(-1)
++++(D is for duel; D0 means no initiation cost, D1 means attacker paid one stone to initiate the duel; 1-2 means white bid 1 and black bid 0; STY means the piece stays, RMV means piece needs removed; BLF is bluff 0-0 bet; +1 means defender gains a stone, -1 means attacker loses a stone)
+
+
+[b]Todo for server-client phase II:[/b]
+-Get the server to relay messages between two clients.
+-Get clients to be able to receive input from server and convert that into a move
+-Start designing how to separate the program between server and client.
+-Implement multiple connections for spectators.
+
+
+[b]Todo phase I:[/b]
+-Improve move list storage
+--Fix warrior king move numbering
+--Implement rampage, tiger, and whirlwind capture notation
+---Rampage: RMP(Pe5) [one line for each piece taken]
+---Tiger: Notation remains same; but need to implement code that recognizes this
+---Whirlwind: W@(Nd4) [one line for each piece taken]
+-Allow games to be stepped through via move list
+-Implement saving/loading game via saving/loading move list
+-Incorporate Trevor's images for empowerment and stones when received
+-Start writing a notation spec.
+
+
+
+[b]Todo for rule-enforced phase III:[/b]
+-ultimately want a separate popup for pawn promotion
+-Implement piece rules
+-Rules implementation notes -- x123 has been working on this; ongoing
+
+
+
+
+[b]Got to 10%!: Game is playable with pawn promotion, dueling, and works on single computer[/b] 
+Getting to 11%: Implement ability for client program to connect to a server.
+Getting to 12%: Implement ability for server to handle and pass information between two client programs, and spectators.
+Getting to 20%: Two players on different clients can play each other
+Getting to 25%: Make sure alternating turns works properly
+Getting to 30%: Make sure alternating turns works properly, with undo button
+Getting to 40%: Make additional components of the board (buttons, move list, history, etc...)
+Getting to 80%: Pieces follow rules
+Getting to 90%: Deploy server/client onto fantasystrike.com
+Getting to 100%: Fix remaining bugs 
+Getting to 110%: Gather statistical data and games from server for analysis
+Getting to 130%: Add AI
+Getting to 150%: Have multiple AIs play each other
+Getting to 200%: Record statistics of thousands of AI games to determine better balancing schemes
+
+
+
+
+[IMG]http://i1210.photobucket.com/albums/cc418/AgustusTheCow/2011-08-02_V-B_animal-empowered_0-1-1.png[/IMG]
+*Animal White played a horrible game, now stored for eternity.
+

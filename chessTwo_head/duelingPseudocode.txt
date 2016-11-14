@@ -1,0 +1,127 @@
+chess 2 dueling buttons 
+
+note: unless otherwise stated, we can use the messages we allready made
+
+//
+
+state 0 
+
+draw state 0 buttons 
+
+button 0: go to state 1
+
+button 1: go to state 0 (do nothing) 
+
+note: button 1 exists so its easier when we have automatic dueling trigger on capture.
+
+//
+
+state 1 
+
+draw state 1 buttons 
+
+button 2: set dueling army to white, go to state 2
+
+button 3: set dueling army to black, go to state 2
+
+button 4: go to state 0 
+
+note: this entire state will vanish when we have automatic dueling trigger on capture.
+
+//
+
+state 2 
+
+draw state 2 buttons 
+
+button 5: check dueling army, and decrease its stonecount by 1.  go to state 3.
+
+button 6: go to state 3.
+
+button 7: go to state 1 
+
+note:  this entire state will vanish when we have automiatic dueling trigger on capture, possibly replaced with a warning about dueling higher ranked piece and a confirm/cancel button 
+
+//
+
+state 3 
+
+if whitestonecount == 0, set whitebid = 0 and go to state 4
+
+if whitestonecount == 1, DO NOT DRAW OR ACTIVATE button 10 
+
+draw state 3 buttons 
+
+button 8: set whitebid = 0.  go to state 4
+
+button 9: set whitebid = 1.  go to state 4.
+
+button 10: set whitebid = 2.  go to state 4. 
+
+note:  eventually, states 3 and 4 will only have one go to each player on the server as necessary
+
+//
+
+state 4 
+
+if blackstonecount == 0, set whitebid = 0 and go to state 5
+
+if blackstonecount == 1, DO NOT DRAW OR ACTIVATE button 13 
+
+draw state 4 buttons 
+
+button 11: set blackbid = 0, go to state 5
+
+button 12: set blackbid = 1, go to state 5
+
+button 13: set blackbid = 2, go to state 5 
+
+note:  eventually, states 3 and 4 will only have one go to each player on the server as necessary
+
+//
+
+state 5 
+
+check for the case of whitebid = 0 and blackbid = 0 and trigger a statesixskip flag if this is not the case
+
+compare whitebid and blackbid, and determine whether the duel starter bid more than the dueled piece 
+
+display the following messages
+
+[color] started the duel
+
+[color] [did or did not] pay a stone to start the duel
+
+white bid [whitebid]
+
+black bid [blackbid]
+
+[duel starter] [did or did not] bid more stones than [duel defender], so the defending piece [stays or is removed] 
+
+decrease whitestonecount by whitebid
+
+decreaseblackstonecount by blackbid 
+
+draw state 5 button 
+
+button 14: go to state 6 
+
+note:  I keep thinking there should be more information here but I can't think of what.
+
+//
+
+state 6 
+
+if statesixskip flag is triggered, go to state 0 
+
+display a message stating that the player who was dueled called a bluff
+
+display a message stating that the player who was dueled may choose to gain a stone or make its attacker lose one 
+
+draw state 6 butons 
+
+button 15: increase defender stonecount by 1.  go to state 0
+
+button 16: decrease attacker stonecount by 1.  go to state 0. 
+
+//we need to have it check and make sure before displaying anything here, either by a statesixskip flag or something else.

@@ -1,0 +1,70 @@
+chess 2 setup
+
+boardarray[x][y]
+have it be from 0 to 9
+if anything has an x or y of 0 or of 9, something is wrong
+each[x] and [y] of 1-8 represent a square on the board
+value of each determines what's there
+
+0 - empty square
+1 - white classic pawn
+2 - white classic knight
+3 - white classic bishop
+4 - white classic rook
+5 - white classic queen
+6 - white classic king
+7 - black classic pawn
+8 - black classic knight
+9 - black classic bishop
+10 - black classic rook
+11 - black classic queen
+12 - black classic king
+13 - white nemesis pawn 
+etc.
+
+need 12 options for each army (for both colors)
+
+have a draw board function to redraw the board from scratch
+a) draw the white and black squares
+b) use the board position to determine what is on each square and draw those piece images
+
+
+
+2011-07-10
+Percent complete: 4% (see screenshot below)
+
+Milestones:
+Made ground-breaking graphics for all pieces
+Clicking highlights the square clicked
+Built a beard to store every piece's position
+Added temporary space for name setup
+Got board updating working: drawBoard() and updateBoard()
+Made pieces moveable; solved the GOD PIECE SYNDROME
+
+Top action items:
+
+1. Detect captures to allow for dueling
+2. Look at liq3's code for reference
+3. Keep track of pieces that were captured, so that they can be put back if redo happens
+3. Implement pawn promotion
+4. Specify UI -- complete UI specs
+5. Implement multiple connections
+6. Rules implementation notes -- x295874 has been working on this; ongoing
+
+9. Still have to read http://www.webreference.com/programm...ipt/javachess/. It looks like a promising resource.
+10. Implement piece rules
+
+
+Getting to 5%: Implement yomi dueling
+Getting to 10%: Classic vs classic version of the game works on single computer (with dueling)
+Getting to 20%: Two players on different clients can both modify the board
+Getting to 25%: Make sure alternating turns works properly
+Getting to 27%: Make sure alternating turns works properly, with undo button
+Getting to 30%: Add the rest of the armies
+Getting to 40%: Make additional components of the board (buttons, move list, history, etc...)
+Getting to 80%: Pieces follow rules
+
+
+
+
+
